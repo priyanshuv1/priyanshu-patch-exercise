@@ -10,16 +10,22 @@ export function useTasks(query, status, page, pageSize) {
   useEffect(() => {
     setLoading(true);
 
-    fetchTasks({ query, status, page, pageSize })
-      .then((data) => {
-        setTasks(data.items);
-        setTotal(data.total);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
+    const timer = setTimeout(() => {
+      fetchTasks({ query, status, page, pageSize })
+        .then((data) => {
+         setTasks(data.items);
+         setTotal(data.total);
+         setLoading(false);
+         setError(null);
+       })
+       .catch((err) => {
+         setError(err.message);
+         setLoading(false);
       });
-  }, [query, status, page, pageSize]);
+  }, 400);
+
+  return () => clearTimeout(timer);
+}, [query, status, page, pageSize]);
 
   return { tasks, total, loading, error };
 }
